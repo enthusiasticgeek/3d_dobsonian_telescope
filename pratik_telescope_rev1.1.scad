@@ -388,9 +388,9 @@ ota_offset=40;
 translate([0,0,ota_offset]) rotate(80, [ 0,1,0 ]) ota();
 //ota();
      
-translate([50, 0, 40])  t("Pratik Telescope", 2, ":style=Bold");
+translate([50, 0, 40])  t("Enthusiasticgeek Telescope", 2, ":style=Bold");
     
-rotate(180,[0,0,1]) translate([50, 0, 40])  t("Pratik Telescope", 2, ":style=Bold");
+rotate(180,[0,0,1]) translate([50, 0, 40])  t("Enthusiasticgeek Telescope", 2, ":style=Bold");
     
 }
 
