@@ -4,7 +4,7 @@
 
 The program one would use is the following called OpenSCAD
 
-The Linux/Windows download page is below
+The Linux/ Windows/ OS X download page is below
 
 http://www.openscad.org/downloads.html
 
