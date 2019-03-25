@@ -1,5 +1,29 @@
-//Author: Pratik Tambe (c) 2019
-//f/8 6" Dobsonian Telescope
+//f/8 6" Square Tube Dobsonian Telescope
+/*
+MIT License
+
+Copyright (c) 2019 Enthusiasticgeek <enthusiasticgeek@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+// Note: All measurements are in inches unless otherwise specified
 
 //baseboard
 module baseboard_plate(){
@@ -35,7 +59,7 @@ module primary_mirror(){
 //secondary mirror
 module secondary_mirror(){
     //optical flat
-  rotate(90,[0,0,1])  difference(){
+  rotate([0,0,45])  difference(){
        color("green") cylinder(h=5, r1=1.3, r2=1.3,$fn=50, center=false);
        color("green") translate([0,0,3]) rotate(45, [ 0,1,0 ]) cylinder(h=3, r1=5, r2=5,$fn=50, center=false);
        color("silver") translate([0,0,-2]) rotate(45, [ 0,1,0 ]) cylinder(h=3, r1=5, r2=5,$fn=50, center=false);
@@ -80,7 +104,7 @@ module baseboard(){
         */
         
         
-     translate([0.25,0,0]) leg();
+    translate([0.25,0,0]) leg();
     translate([19/2.0*6/sqrt(3)/2,-19/2.0*6/sqrt(3)/2.0/2,0]) rotate(125,[0,0,1]) leg();
     translate([19/2.0*6/sqrt(3)/2,19/2.0*6/sqrt(3)/2.0/2,0])  rotate(-125,[0,0,1]) leg();
         
@@ -275,11 +299,14 @@ module telrad(){
    //l x w x h
    //base 9 x 2 x 5 inches
    //translate([0,0,10])  rotate(-45,[0,1,0]) cube([2,2,2],center=true);
+    rotate([180,0,0])
+    {
     rotate(180,[1,0,1]) union(){
        cube([9,2,2],center=true);
        translate([+9/2.0-1.5,0,-1]) rotate(-45,[0,1,0])  cube([2,2,2],center=true);
        color("red",0.2) translate([+9/2.0-2,0,-2.2]) rotate(-45,[0,1,0])  cube([0.2,1.8,3],center=true);
     }
+   }
 }
 
 //focuser
@@ -317,11 +344,17 @@ module ota(){
     thickness=0.25;
     inner_side=8;
     outer_side=2*thickness+inner_side;
+    
     color("red") difference() {
       cube([outer_side,outer_side,ota_length],center=true);
       cube([inner_side,inner_side,ota_length+2], center=true);
-      #translate([0,0,-ota_length/2.0+focal_length+3]) rotate(90, [ 1,0,0 ]) cylinder(h=30, r1=1.3, r2=1.3,$fn=50, center=false);
+      translate([-inner_side/2.0,-inner_side/2.0,ota_length/2.0-13.5/2+1]) cube([3.5,3.5,13.5], center=true);
+      //rotate([90, 90, 0])  translate([-ota_length/2.0-2,-inner_side/2.0-0.5,inner_side/2.0+0.5])  prism();
+      rotate([90, 90, 0])  translate([-ota_length/2.0-2,-inner_side/2.0-0.5,inner_side/2.0+0.5])  cube([10,10,10]);
+      #translate([0,0,-ota_length/2.0+focal_length+3]) rotate(90, [ 1,-1,0 ]) cylinder(h=30, r1=1.3, r2=1.3,$fn=50, center=false);
     }
+
+      translate([3.0,-3.0,0]) rotate([90, 90, 45]) translate([-ota_length/2.0+13.5/2, -inner_side/2.0,-inner_side/2.0]) cube([13.5,0.5,3.5], center=true);   
 
 //corner1
  translate([-inner_side/2.0,inner_side/2.0,0]) quarter_rims(ota_length,0);
@@ -369,14 +402,28 @@ color("white") ota_altitude_bearing(6);
 color("white") ota_altitude_bearing(-6);
 
 //telrad
-translate([-inner_side/2.0-1.5,0,ota_length/2.0-9/2.0]) telrad();
+translate([-inner_side/2.0-1.5,0,+ota_length/2.0-9/2.0]) telrad();
 
 //focuser
-translate([0,-10,0]) focuser();
+rotate([0, 0, -45]) translate([0,-5,0]) focuser();
 
 }
 
+module prism(){
+    offset=0.5;
+    length=13.5+offset;
+    width=4+offset;
+    #polyhedron(points=[[0,0,0],[0,width,0],[length,0,0],[length,width,0],[0,0,-width],[length,0,-width]], faces=[[0,1,3,2],[0,2,5,4],[1,3,5,4],[0,1,4],[2,3,5]]);
+   
+}
+
 module telescope(){
+        
+    ota_length=54;
+    focal_length=48;
+    thickness=0.25;
+    inner_side=8;
+    outer_side=2*thickness+inner_side;
 
 //start with the base of telescope
 baseboard();
@@ -385,13 +432,14 @@ rockerboard();
 //show dis-assembled    
 ota_offset=40;    
 //Start telescope construction
-translate([0,0,ota_offset]) rotate(80, [ 0,1,0 ]) ota();
+translate([0,0,ota_offset]) rotate(80, [ 0,1,0 ]) difference(){ ota(); translate([0,0,-ota_length/2.0+focal_length+3]) rotate(90, [ 1,-1,0 ]) cylinder(h=30, r1=1.3, r2=1.3,$fn=50, center=false); }
 //ota();
      
 translate([50, 0, 40])  t("Enthusiasticgeek Telescope", 2, ":style=Bold");
     
-rotate(180,[0,0,1]) translate([50, 0, 40])  t("Enthusiasticgeek Telescope", 2, ":style=Bold");
+rotate(180,[0,0,1]) translate([50, 0, 40])  t("Pratik Telescope", 2, ":style=Bold");
     
+
 }
 
 
