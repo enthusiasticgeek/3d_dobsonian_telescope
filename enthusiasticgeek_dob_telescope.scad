@@ -129,19 +129,20 @@ module rockerboard(){
     //add
     thickness=0.75;
     side_length=30;
-    front_length=12;
+    front_length=18;
     width=12;
+    front_width=10;
     radius=3;
     
     //front
-    translate([12/2.0,-width/2.0-thickness,thickness]) 
+    translate([12/2.0,-front_width/2.0-thickness,thickness]) 
     difference(){
-        cube([thickness,width+2*thickness,front_length], center=false);
-        translate([0,width/2.0+thickness,front_length/2.0]) rotate(90,[0,1,0])  cylinder(h=2, r1=radius, r2=radius,$fn=50, center=true);
+        cube([thickness,front_width+2*thickness,front_length], center=false);
+        translate([0,front_width/2.0+thickness,front_length/2.0]) rotate(90,[0,1,0])  cylinder(h=2, r1=radius, r2=radius,$fn=50, center=true);
     }
     
     //left
-    rotate(90,[0,0,1]) translate([12/2.0,-width/2.0,thickness]) 
+    rotate(90,[0,0,1]) translate([front_width/2.0,-width/2.0,thickness]) 
     difference(){
         difference(){
             difference(){
@@ -155,7 +156,7 @@ module rockerboard(){
     }
     
     //right
-    rotate(90,[0,0,1]) translate([-12/2.0-thickness,-width/2.0,thickness]) 
+    rotate(90,[0,0,1]) translate([-front_width/2.0-thickness,-width/2.0,thickness]) 
     difference(){
         difference(){
             difference(){
